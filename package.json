@@ -57,8 +57,7 @@
       "debug@2.2.0",
       "body-parser@1.12.4",
       "mime-types@2.0.12",
-      "webtask-tools",
-      "lawgs@1.0.4"
+      "webtask-tools"
     ]
   },
   "dependencies": {
