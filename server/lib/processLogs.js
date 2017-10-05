@@ -3,6 +3,7 @@ const request = require('request');
 const moment = require('moment');
 const url = require('url');
 const loggingTools = require('auth0-log-extension-tools');
+const lawgs = require('lawgs');
 
 const config = require('../lib/config');
 const logger = require('../lib/logger');
@@ -18,19 +19,26 @@ module.exports = (storage) =>
     }
 
     const now = Date.now();
-    let logstashUrl = config('LOGSTASH_URL');
+    let aws_access_key = config('AWS_ACCESS_KEY');
+    let aws_secret_key = config('AWS_SECRET_KEY');
+    let log_group_name = config('LOG_GROUP');
+    let log_stream_name = config('AUTH0_DOMAIN');
 
-    if (config('LOGSTASH_TOKEN')) {
-      const parsedUrl = url.parse(logstashUrl);
-      logstashUrl = (parsedUrl.query) ? `${logstashUrl}&token=${config('LOGSTASH_TOKEN')}` : `${logstashUrl}?token=${config('LOGSTASH_TOKEN')}`;
-    }
+    lawgs.config({
+      aws: {
+        accessKeyId: aws_access_key,
+        secretAccessKey: aws_secret_key,
+        region: 'us-east-1'
+      }
+    });
+
+    lawger = lawgs.getOrCreate(log_group_name);
 
     const sendLog = function (log, callback) {
       if (!log) {
         return callback();
       }
 
-      const index = config('LOGSTASH_INDEX');
       const data = {
         post_date: now,
         type_description: loggingTools.logTypes.get(log.type)
@@ -40,30 +48,10 @@ module.exports = (storage) =>
         data[key] = log[key];
       });
 
-      data[index] = log[index] || 'auth0';
-      data.message = JSON.stringify(log);
+      data.message = log;
 
-      const options = {
-        method: 'POST',
-        timeout: 2000,
-        url: logstashUrl,
-        headers: { 'cache-control': 'no-cache', 'content-type': 'application/json' },
-        body: data,
-        json: true
-      };
+      lawger.log(log_stream_name, data);
 
-      if (config('LOGSTASH_USER') && config('LOGSTASH_PASSWORD')) {
-        options['auth'] = {
-          user: config('LOGSTASH_USER'),
-          pass: config('LOGSTASH_PASSWORD'),
-          sendImmediately: true
-        }
-      }
-
-      request(options, (err, resp, body) => {
-        const error = err || (body && body.error) || null;
-        callback(error);
-      });
     };
 
     const onLogsReceived = (logs, callback) => {
@@ -71,12 +59,12 @@ module.exports = (storage) =>
         return callback();
       }
 
-      logger.info(`Sending ${logs.length} logs to Logstash.`);
+      logger.info(`Sending ${logs.length} logs to CloudWatch.`);
 
       async.eachLimit(logs, 10, sendLog, callback);
     };
 
-    const slack = new loggingTools.reporters.SlackReporter({ hook: config('SLACK_INCOMING_WEBHOOK_URL'), username: 'auth0-logs-to-logstash', title: 'Logs To Logstash' });
+    const slack = new loggingTools.reporters.SlackReporter({ hook: config('SLACK_INCOMING_WEBHOOK_URL'), username: 'auth0-logs-to-cloudwatch', title: 'Logs To CloudWatch' });
 
     const options = {
       domain: config('AUTH0_DOMAIN'),

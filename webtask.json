@@ -35,10 +35,6 @@
       "description": "AWS CloudWatch log group name",
       "required": true
     },
-    "LOG_STREAM": {
-      "description": "AWS CloudWatch log stream name",
-      "required": true
-    },
     "START_FROM": {
       "description": "Checkpoint ID of log to start from."
     },
