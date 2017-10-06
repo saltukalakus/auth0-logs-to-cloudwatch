@@ -1,6 +1,6 @@
 {
   "name": "auth0-logs-to-cloudwatch",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "This extension will continuously export your Auth0 logs to CloudWatch",
   "main": "index.js",
   "scripts": {
@@ -35,6 +35,7 @@
       "express@4.12.4",
       "express-jwt@3.1.0",
       "iconv-lite@0.4.10",
+      "lawgs@1.0.4",
       "lodash@3.10.1",
       "lru-cache@2.6.4",
       "mime-db@1.10.0",
