@@ -12,6 +12,7 @@ const hooks = require('./routes/hooks');
 const logger = require('./lib/logger');
 const config = require('./lib/config');
 const processLogs = require('./lib/processLogs');
+const metadata = require('../webtask.json');
 
 module.exports = (configProvider, storageProvider) => {
   config.setProvider(configProvider);
@@ -60,5 +61,11 @@ module.exports = (configProvider, storageProvider) => {
 
   // Generic error handler.
   app.use(expressTools.middlewares.errorHandler(logger.error.bind(logger)));
+
+  // This endpoint would be called by webtask-gallery when the extension is installed as custom-extension
+  app.get('/meta', (req, res) => {
+    res.status(200).send(metadata);
+  });
+
   return app;
 };
