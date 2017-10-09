@@ -26,8 +26,7 @@ module.exports = {
       'redux-form',
       'redux-thunk',
       'redux-logger',
-      'redux-promise-middleware',
-      'lawgs'
+      'redux-promise-middleware'
     ]
   },
 
