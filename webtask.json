@@ -7,7 +7,7 @@
   "description": "This extension will continuously export your Auth0 logs to AWS CloudWatch",
   "type": "cron",
   "initialUrlPath": "/login",
-  "repository": "https://github.com/TDG-Platform/auth0-logs-to-cloudwatch",
+  "repository": "https://github.com/saltukalakus/auth0-logs-to-cloudwatch-22",
   "keywords": [
     "auth0",
     "extension"
