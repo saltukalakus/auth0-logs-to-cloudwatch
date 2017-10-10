@@ -3,7 +3,7 @@ const request = require('request');
 const moment = require('moment');
 const url = require('url');
 const loggingTools = require('auth0-log-extension-tools');
-const lawgs = require('lawgs');
+//const lawgs = require('lawgs');
 
 const config = require('../lib/config');
 const logger = require('../lib/logger');
