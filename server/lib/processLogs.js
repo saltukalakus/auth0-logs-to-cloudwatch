@@ -24,6 +24,7 @@ module.exports = (storage) =>
     let log_group_name = config('LOG_GROUP');
     let log_stream_name = config('AUTH0_DOMAIN');
 
+    /*
     lawgs.config({
       aws: {
         accessKeyId: aws_access_key,
@@ -33,7 +34,7 @@ module.exports = (storage) =>
     });
 
     lawger = lawgs.getOrCreate(log_group_name);
-
+ */
     const sendLog = function (log, callback) {
       if (!log) {
         return callback();
